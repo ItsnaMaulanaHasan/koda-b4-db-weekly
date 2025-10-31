@@ -1,0 +1,288 @@
+Enum product_size {
+  "R"
+  "L"
+  "XL"
+  "250gr"
+}
+
+Enum status {
+  "On Progress"
+  "Shipping"
+  "Done"
+}
+
+Enum shipping {
+  "Delivery"
+  "Dine In"
+  "Pick Up"
+}
+
+Enum temperature {
+  "Hot"
+  "Ice"
+}
+
+Table users {
+  id serial [primary key]
+  first_name varchar(100) [not null]
+  last_name varchar(100) [not null]
+  email varchar(100) [unique, not null]
+  role varchar(20) [default: "costumer", not null]
+  password text [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: users.created_by > users.id
+Ref: users.updated_by > users.id
+
+Table profiles {
+  id serial [primary key]
+  user_id int
+  image text
+  address varchar(100)
+  phone_number varchar(20)
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: profiles.user_id - users.id 
+Ref: profiles.created_by > users.id
+Ref: profiles.updated_by > users.id
+
+Table carts {
+  id serial [primary key]
+  user_id int
+  product_id int
+  amount int
+  subtotal numeric(10,2)
+  size product_size [default: "R"]
+  temperature temperature [default: "Ice"]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: carts.user_id > users.id
+Ref: carts.product_id > products.id
+Ref: carts.created_by > users.id
+Ref: carts.updated_by > users.id
+
+Table products {
+  id serial [primary key]
+  name varchar(100) [unique, not null]
+  description text [not null]
+  price float [not null]
+  discount float
+  rating float [default: 5]
+  isFlashSale bool [default: false]
+  stock int 
+  is_active bool [default: true]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: products.created_by > users.id
+Ref: products.updated_by > users.id
+
+Table product_image {
+  id serial [primary key]
+  image text [not null]
+  product_id int
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: product_image.product_id > products.id
+Ref: product_image.created_by > users.id
+Ref: product_image.updated_by > users.id
+
+Table size {
+  id serial [primary key]
+  name varchar(10) [unique, not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: size.created_by > users.id
+Ref: size.updated_by > users.id
+
+Table product_size {
+  id serial [primary key]
+  product_id int
+  size_id int
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: product_size.product_id > products.id
+Ref: product_size.size_id > size.id
+Ref: product_size.created_by > users.id
+Ref: product_size.updated_by > users.id
+
+Table testimonies {
+  id serial [primary key]
+  user_id int
+  position varchar(100)
+  rating float [default: 5]
+  testimonial text
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: testimonies.user_id - users.id
+Ref: testimonies.created_by - users.id
+Ref: testimonies.updated_by > users.id
+
+Table orders {
+  id serial [primary key]
+  user_id int
+  dateOrder timestamp [default:  `CURRENT_TIMESTAMP`]
+  fullName varchar(100) [not null]
+  email varchar(100) [not null]
+  address varchar(100) [not null]
+  phone varchar(20) [not null]
+  paymentMethod varchar(20)
+  shipping shipping [default: "Dine In"]
+  status status [default: "On Progess"]
+  totalTransaction numeric(10,2) [not null]
+  deliveryFee numeric(10,2) [default: 0]
+  tax numeric(10,2) [default: 0]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int 
+}
+
+Ref: orders.user_id > users.id
+Ref: orders.created_by > users.id
+Ref: orders.updated_by > users.id
+
+Table products_order {
+  id serial [primary key]
+  order_id int
+  product_id int
+  amount int
+  subtotal numeric(10,2)
+  size product_size [default: "L"]
+  temperature temperature [default: "Ice"]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: products_order.order_id > orders.id
+Ref: products_order.product_id > products.id
+Ref: products_order.created_by > users.id
+Ref: products_order.updated_by > users.id
+
+Table sessions {
+  id serial [primary key]
+  user_id int
+  session_token text [unique, not null]
+  login_time timestamp [default: `CURRENT_TIMESTAMP`]
+  expired_time timestamp
+  ip_address varchar(20)
+  device varchar(100)
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: sessions.user_id - users.id
+Ref: sessions.created_by > users.id
+Ref: sessions.updated_by > users.id
+
+Table password_resets {
+  id serial [primary key]
+  token_reset char(6) [unique, not null]
+  user_id int
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: password_resets.user_id - users.id
+Ref: password_resets.created_by > users.id
+Ref: password_resets.updated_by > users.id
+
+Table categories {
+  id serial [primary key]
+  name varchar(100) [unique, not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: categories.created_by > users.id
+Ref: categories.updated_by > users.id
+
+Table product_category {
+  id serial [primary key]
+  product_id int
+  category_id int
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: product_category.product_id > products.id
+Ref: product_category.category_id > categories.id
+Ref: product_category.created_by > users.id
+Ref: product_category.updated_by > users.id
+
+Table coupons {
+  id serial [primary key]
+  title varchar(100) [unique, not null]
+  description text [not null]
+  image text [not null]
+  bgColor varchar(20) [not null]
+  validUntil timestamp
+  isActive bool [default: true]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: coupons.created_by > users.id
+Ref: coupons.updated_by > users.id
+
+Table coupon_usage {
+  id serial [primary key]
+  user_id int
+  coupon_id int
+  order_id int
+  discount_amount numeric(10,2)
+  used_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  created_by int
+  updated_by int
+}
+
+Ref: coupon_usage.user_id > users.id
+Ref: coupon_usage.coupon_id > coupons.id
+Ref: coupon_usage.order_id > orders.id
+Ref: coupon_usage.created_by > users.id
+Ref: coupon_usage.updated_by > users.id
+
