@@ -50,7 +50,7 @@ Table profiles {
   updated_by int
 }
 
-Ref: profiles.user_id - users.id 
+Ref: users.id - profiles.user_id 
 Ref: profiles.created_by > users.id
 Ref: profiles.updated_by > users.id
 
@@ -118,7 +118,7 @@ Table size {
 Ref: size.created_by > users.id
 Ref: size.updated_by > users.id
 
-Table product_size {
+Table products_size {
   id serial [primary key]
   product_id int
   size_id int
@@ -128,10 +128,10 @@ Table product_size {
   updated_by int
 }
 
-Ref: product_size.product_id > products.id
-Ref: product_size.size_id > size.id
-Ref: product_size.created_by > users.id
-Ref: product_size.updated_by > users.id
+Ref: products_size.product_id > products.id
+Ref: products_size.size_id > size.id
+Ref: products_size.created_by > users.id
+Ref: products_size.updated_by > users.id
 
 Table testimonies {
   id serial [primary key]
@@ -145,8 +145,8 @@ Table testimonies {
   updated_by int
 }
 
-Ref: testimonies.user_id - users.id
-Ref: testimonies.created_by - users.id
+Ref: users.id - testimonies.user_id
+Ref: testimonies.created_by > users.id
 Ref: testimonies.updated_by > users.id
 
 Table orders {
@@ -159,7 +159,7 @@ Table orders {
   phone varchar(20) [not null]
   paymentMethod varchar(20)
   shipping shipping [default: "Dine In"]
-  status status [default: "On Progess"]
+  status status [default: "On Progress"]
   totalTransaction numeric(10,2) [not null]
   deliveryFee numeric(10,2) [default: 0]
   tax numeric(10,2) [default: 0]
@@ -206,7 +206,7 @@ Table sessions {
   updated_by int
 }
 
-Ref: sessions.user_id - users.id
+Ref: users.id - sessions.user_id
 Ref: sessions.created_by > users.id
 Ref: sessions.updated_by > users.id
 
@@ -220,7 +220,7 @@ Table password_resets {
   updated_by int
 }
 
-Ref: password_resets.user_id - users.id
+Ref: users.id - password_resets.user_id
 Ref: password_resets.created_by > users.id
 Ref: password_resets.updated_by > users.id
 
