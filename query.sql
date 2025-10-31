@@ -96,7 +96,7 @@ CREATE TABLE "size" (
     "updated_by" int
 );
 
-CREATE TABLE "product_size" (
+CREATE TABLE "products_size" (
     "id" serial PRIMARY KEY,
     "product_id" int,
     "size_id" int,
@@ -128,7 +128,7 @@ CREATE TABLE "orders" (
     "phone" varchar(20) NOT NULL,
     "paymentMethod" varchar(20),
     "shipping" shipping DEFAULT 'Dine In',
-    "status" status DEFAULT 'On Progess',
+    "status" status DEFAULT 'On Progress',
     "totalTransaction" numeric(10, 2) NOT NULL,
     "deliveryFee" numeric(10, 2) DEFAULT 0,
     "tax" numeric(10, 2) DEFAULT 0,
@@ -227,8 +227,8 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 ALTER TABLE "users"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "users"
-ADD FOREIGN KEY ("id") REFERENCES "profiles" ("user_id");
+ALTER TABLE "profiles"
+ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "profiles"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
@@ -269,23 +269,23 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 ALTER TABLE "size"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "product_size"
+ALTER TABLE "products_size"
 ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
-ALTER TABLE "product_size"
+ALTER TABLE "products_size"
 ADD FOREIGN KEY ("size_id") REFERENCES "size" ("id");
 
-ALTER TABLE "product_size"
+ALTER TABLE "products_size"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
-ALTER TABLE "product_size"
+ALTER TABLE "products_size"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "users"
-ADD FOREIGN KEY ("id") REFERENCES "testimonies" ("user_id");
+ALTER TABLE "testimonies"
+ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
-ALTER TABLE "users"
-ADD FOREIGN KEY ("id") REFERENCES "testimonies" ("created_by");
+ALTER TABLE "testimonies"
+ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
 ALTER TABLE "testimonies"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
@@ -311,8 +311,8 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 ALTER TABLE "products_order"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "users"
-ADD FOREIGN KEY ("id") REFERENCES "sessions" ("user_id");
+ALTER TABLE "sessions"
+ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "sessions"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
@@ -320,8 +320,8 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 ALTER TABLE "sessions"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "users"
-ADD FOREIGN KEY ("id") REFERENCES "password_resets" ("user_id");
+ALTER TABLE "password_resets"
+ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "password_resets"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
