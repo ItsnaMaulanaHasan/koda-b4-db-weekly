@@ -32,7 +32,7 @@ erDiagram
         int user_id FK
         int product_id FK
         int amount
-        numeric(10,2) subtotal
+        numeric subtotal
         product_sizes size
         timestamp created_at
         timestamp updated_at
@@ -44,9 +44,9 @@ erDiagram
         serial id PK
         varchar(255) name UK
         text description
-        numeric(10,2) price
-        numeric(5,2) discount_percent
-        numeric(2,1) rating
+        numeric price
+        numeric discount_percent
+        numeric rating
         bool is_flash_sale
         int stock
         bool is_active
@@ -89,7 +89,7 @@ erDiagram
         serial id PK
         int user_id FK
         varchar(100) position
-        numeric(2,1) rating
+        numeric rating
         text testimonial
         timestamp created_at
         timestamp updated_at
@@ -108,9 +108,9 @@ erDiagram
         varchar(50) payment_method
         shipping shipping
         status status
-        numeric(10,2) total_transaction
-        numeric(10,2) delivery_fee
-        numeric(10,2) tax
+        numeric total_transaction
+        numeric delivery_fee
+        numeric tax
         timestamp created_at
         timestamp updated_at
         int created_by FK
@@ -122,10 +122,10 @@ erDiagram
         int order_id FK
         int product_id FK
         varchar(255) product_name
-        numeric(10,2) product_price
-        numeric(5,2) discount_percent
+        numeric product_price
+        numeric discount_percent
         int amount
-        numeric(10,2) subtotal
+        numeric subtotal
         product_sizes size
         timestamp created_at
         timestamp updated_at
@@ -183,8 +183,8 @@ erDiagram
         serial id PK
         varchar(255) title UK
         text description
-        numeric(5,2) discount_percent
-        numeric(10,2) min_purchase
+        numeric discount_percent
+        numeric min_purchase
         text image
         varchar(20) bg_color
         timestamp valid_until
@@ -200,7 +200,7 @@ erDiagram
         int user_id FK
         int coupon_id FK
         int order_id FK
-        numeric(10,2) discount_amount
+        numeric discount_amount
         timestamp used_at
         timestamp updated_at
         int created_by FK
