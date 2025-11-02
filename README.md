@@ -45,10 +45,10 @@ erDiagram
         serial id PK
         varchar name UK
         text description
-        float price
-        float discount
-        float rating
-        bool isFlashSale
+        numeric price
+        numeric discount_percent
+        numeric rating
+        bool is_flash_sale
         int stock
         bool is_active
         timestamp created_at
@@ -90,7 +90,7 @@ erDiagram
         serial id PK
         int user_id FK
         varchar position
-        float rating
+        numeric rating
         text testimonial
         timestamp created_at
         timestamp updated_at
@@ -101,16 +101,16 @@ erDiagram
     orders {
         serial id PK
         int user_id FK
-        timestamp dateOrder
-        varchar fullName
+        timestamp date_order
+        varchar full_name
         varchar email
         varchar address
         varchar phone
-        varchar paymentMethod
+        varchar payment_method
         shipping shipping
         status status
-        numeric totalTransaction
-        numeric deliveryFee
+        numeric total_transaction
+        numeric delivery_fee
         numeric tax
         timestamp created_at
         timestamp updated_at
@@ -122,6 +122,9 @@ erDiagram
         serial id PK
         int order_id FK
         int product_id FK
+        varchar product_name
+        numeric product_price
+        numeric discount_percent
         int amount
         numeric subtotal
         product_size size
@@ -137,9 +140,10 @@ erDiagram
         int user_id FK
         text session_token UK
         timestamp login_time
-        timestamp expired_time
+        timestamp expired_at
         varchar ip_address
         varchar device
+        bool is_active
         timestamp created_at
         timestamp updated_at
         int created_by FK
@@ -148,8 +152,9 @@ erDiagram
 
     password_resets {
         serial id PK
-        char token_reset UK
         int user_id FK
+        char token_reset UK
+        timestamp expired_at
         timestamp created_at
         timestamp updated_at
         int created_by FK
@@ -180,10 +185,12 @@ erDiagram
         serial id PK
         varchar title UK
         text description
+        numeric discount_percent
+        numeric min_purchase
         text image
-        varchar bgColor
-        timestamp validUntil
-        bool isActive
+        varchar bg_color
+        timestamp valid_until
+        bool is_active
         timestamp created_at
         timestamp updated_at
         int created_by FK
