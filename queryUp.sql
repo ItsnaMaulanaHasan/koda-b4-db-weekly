@@ -17,11 +17,6 @@ CREATE TYPE "shipping" AS ENUM (
   'Pick Up'
 );
 
-CREATE TYPE "temperature" AS ENUM (
-  'Hot',
-  'Ice'
-);
-
 CREATE TABLE "users" (
     "id" serial PRIMARY KEY,
     "first_name" varchar(255) NOT NULL,
@@ -54,7 +49,6 @@ CREATE TABLE "carts" (
     "amount" int CHECK ("amount" > 0),
     "subtotal" numeric(10, 2),
     "size" product_sizes DEFAULT 'R',
-    "temperature" temperature DEFAULT 'Ice',
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "created_by" int,
@@ -154,7 +148,6 @@ CREATE TABLE "products_order" (
     "amount" int NOT NULL CHECK ("amount" > 0),
     "subtotal" numeric(10, 2) NOT NULL,
     "size" product_sizes DEFAULT 'L',
-    "temperature" temperature DEFAULT 'Ice',
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "created_by" int,

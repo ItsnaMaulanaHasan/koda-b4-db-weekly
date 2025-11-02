@@ -12,21 +12,21 @@ VALUES (
         'System',
         'admin@dailydrinks.com',
         'admin',
-        '$2a$10$dummyhashedpassword123456789'
+        '$2a$12$lJ2euHwJ1FgA3QRN59Zfze0RQ6uRRE2fVxq4QQbCkqpVcnwdvw43S'
     ),
     (
         'Itsna',
         'Maulana',
         'itsna@gmail.com',
         'customer',
-        '$2a$10$dummyhashedpassword123456789'
+        '$2a$12$lJ2euHwJ1FgA3QRN59Zfze0RQ6uRRE2fVxq4QQbCkqpVcnwdvw43S'
     ),
     (
         'Hasan',
         'Maulana',
         'hasan@gmail.com',
         'customer',
-        '$2a$10$dummyhashedpassword123456789'
+        '$2a$12$lJ2euHwJ1FgA3QRN59Zfze0RQ6uRRE2fVxq4QQbCkqpVcnwdvw43S'
     );
 
 -- insert categories

@@ -17,11 +17,6 @@ Enum shipping {
   "Pick Up"
 }
 
-Enum temperature {
-  "Hot"
-  "Ice"
-}
-
 Table users {
   id serial [primary key]
   first_name varchar(255) [not null]
@@ -61,7 +56,6 @@ Table carts {
   amount int [note: "CHECK amount > 0"]
   subtotal numeric(10,2)
   size product_sizes [default: "R"]
-  temperature temperature [default: "Ice"]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
   created_by int
@@ -183,7 +177,6 @@ Table products_order {
   amount int [not null, note: "CHECK amount > 0"]
   subtotal numeric(10,2) [not null]
   size product_sizes [default: "L"]
-  temperature temperature [default: "Ice"]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
   created_by int

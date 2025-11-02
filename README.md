@@ -34,7 +34,6 @@ erDiagram
         int amount
         numeric(10,2) subtotal
         product_sizes size
-        temperature temperature
         timestamp created_at
         timestamp updated_at
         int created_by FK
@@ -128,7 +127,6 @@ erDiagram
         int amount
         numeric(10,2) subtotal
         product_sizes size
-        temperature temperature
         timestamp created_at
         timestamp updated_at
         int created_by FK
