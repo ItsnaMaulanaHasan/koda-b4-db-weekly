@@ -1,4 +1,4 @@
-CREATE TYPE "product_size" AS ENUM (
+CREATE TYPE "product_sizes" AS ENUM (
   'R',
   'L',
   'XL',
@@ -24,9 +24,9 @@ CREATE TYPE "temperature" AS ENUM (
 
 CREATE TABLE "users" (
     "id" serial PRIMARY KEY,
-    "first_name" varchar(100) NOT NULL,
-    "last_name" varchar(100) NOT NULL,
-    "email" varchar(100) UNIQUE NOT NULL,
+    "first_name" varchar(255) NOT NULL,
+    "last_name" varchar(255) NOT NULL,
+    "email" varchar(255) UNIQUE NOT NULL,
     "role" varchar(20) NOT NULL DEFAULT 'customer',
     "password" text NOT NULL,
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -39,7 +39,7 @@ CREATE TABLE "profiles" (
     "id" serial PRIMARY KEY,
     "user_id" int,
     "image" text,
-    "address" varchar(100),
+    "address" varchar(255),
     "phone_number" varchar(20),
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -53,7 +53,7 @@ CREATE TABLE "carts" (
     "product_id" int,
     "amount" int CHECK ("amount" > 0),
     "subtotal" numeric(10, 2),
-    "size" product_size DEFAULT 'R',
+    "size" product_sizes DEFAULT 'R',
     "temperature" temperature DEFAULT 'Ice',
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -63,7 +63,7 @@ CREATE TABLE "carts" (
 
 CREATE TABLE "products" (
     "id" serial PRIMARY KEY,
-    "name" varchar(100) UNIQUE NOT NULL,
+    "name" varchar(255) UNIQUE NOT NULL,
     "description" text NOT NULL,
     "price" numeric(10, 2) NOT NULL CHECK ("price" > 0),
     "discount_percent" numeric(5, 2),
@@ -90,7 +90,7 @@ CREATE TABLE "product_image" (
     "updated_by" int
 );
 
-CREATE TABLE "size" (
+CREATE TABLE "sizes" (
     "id" serial PRIMARY KEY,
     "name" varchar(10) UNIQUE NOT NULL,
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -99,7 +99,7 @@ CREATE TABLE "size" (
     "updated_by" int
 );
 
-CREATE TABLE "products_size" (
+CREATE TABLE "size_products" (
     "id" serial PRIMARY KEY,
     "product_id" int,
     "size_id" int,
@@ -128,11 +128,11 @@ CREATE TABLE "orders" (
     "id" serial PRIMARY KEY,
     "user_id" int,
     "date_order" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "full_name" varchar(100) NOT NULL,
-    "email" varchar(100) NOT NULL,
-    "address" varchar(100) NOT NULL,
+    "full_name" varchar(255) NOT NULL,
+    "email" varchar(255) NOT NULL,
+    "address" varchar(255) NOT NULL,
     "phone" varchar(20) NOT NULL,
-    "payment_method" varchar(20),
+    "payment_method" varchar(50),
     "shipping" shipping DEFAULT 'Dine In',
     "status" status DEFAULT 'On Progress',
     "total_transaction" numeric(10, 2) NOT NULL CHECK ("total_transaction" > 0),
@@ -148,12 +148,12 @@ CREATE TABLE "products_order" (
     "id" serial PRIMARY KEY,
     "order_id" int,
     "product_id" int,
-    "product_name" varchar(100) NOT NULL,
+    "product_name" varchar(255) NOT NULL,
     "product_price" numeric(10, 2) NOT NULL CHECK ("product_price" > 0),
     "discount_percent" numeric(5, 2),
     "amount" int NOT NULL CHECK ("amount" > 0),
     "subtotal" numeric(10, 2) NOT NULL,
-    "size" product_size DEFAULT 'L',
+    "size" product_sizes DEFAULT 'L',
     "temperature" temperature DEFAULT 'Ice',
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -167,8 +167,8 @@ CREATE TABLE "sessions" (
     "session_token" text UNIQUE NOT NULL,
     "login_time" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "expired_at" timestamp,
-    "ip_address" varchar(20),
-    "device" varchar(100),
+    "ip_address" varchar(30),
+    "device" varchar(255),
     "is_active" bool DEFAULT true,
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -210,7 +210,7 @@ CREATE TABLE "product_category" (
 
 CREATE TABLE "coupons" (
     "id" serial PRIMARY KEY,
-    "title" varchar(100) UNIQUE NOT NULL,
+    "title" varchar(255) UNIQUE NOT NULL,
     "description" text NOT NULL,
     "discount_percent" numeric(5, 2) NOT NULL,
     "min_purchase" numeric(10, 2),
@@ -278,22 +278,22 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 ALTER TABLE "product_image"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "size"
+ALTER TABLE "sizes"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
-ALTER TABLE "size"
+ALTER TABLE "sizes"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "products_size"
+ALTER TABLE "size_products"
 ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
-ALTER TABLE "products_size"
-ADD FOREIGN KEY ("size_id") REFERENCES "size" ("id");
+ALTER TABLE "size_products"
+ADD FOREIGN KEY ("size_id") REFERENCES "sizes" ("id");
 
-ALTER TABLE "products_size"
+ALTER TABLE "size_products"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
-ALTER TABLE "products_size"
+ALTER TABLE "size_products"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "testimonies"

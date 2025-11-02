@@ -4,10 +4,10 @@
 erDiagram
     users {
         serial id PK
-        varchar first_name
-        varchar last_name
-        varchar email UK
-        varchar role
+        varchar(255) first_name
+        varchar(255) last_name
+        varchar(255) email UK
+        varchar(20) role
         text password
         timestamp created_at
         timestamp updated_at
@@ -19,8 +19,8 @@ erDiagram
         serial id PK
         int user_id FK
         text image
-        varchar address
-        varchar phone_number
+        varchar(255) address
+        varchar(20) phone_number
         timestamp created_at
         timestamp updated_at
         int created_by FK
@@ -32,8 +32,8 @@ erDiagram
         int user_id FK
         int product_id FK
         int amount
-        numeric subtotal
-        product_size size
+        numeric(10,2) subtotal
+        product_sizes size
         temperature temperature
         timestamp created_at
         timestamp updated_at
@@ -43,11 +43,11 @@ erDiagram
 
     products {
         serial id PK
-        varchar name UK
+        varchar(255) name UK
         text description
-        numeric price
-        numeric discount_percent
-        numeric rating
+        numeric(10,2) price
+        numeric(5,2) discount_percent
+        numeric(2,1) rating
         bool is_flash_sale
         int stock
         bool is_active
@@ -67,16 +67,16 @@ erDiagram
         int updated_by FK
     }
 
-    size {
+    sizes {
         serial id PK
-        varchar name UK
+        varchar(10) name UK
         timestamp created_at
         timestamp updated_at
         int created_by FK
         int updated_by FK
     }
 
-    products_size {
+    size_products {
         serial id PK
         int product_id FK
         int size_id FK
@@ -89,8 +89,8 @@ erDiagram
     testimonies {
         serial id PK
         int user_id FK
-        varchar position
-        numeric rating
+        varchar(100) position
+        numeric(2,1) rating
         text testimonial
         timestamp created_at
         timestamp updated_at
@@ -102,16 +102,16 @@ erDiagram
         serial id PK
         int user_id FK
         timestamp date_order
-        varchar full_name
-        varchar email
-        varchar address
-        varchar phone
-        varchar payment_method
+        varchar(255) full_name
+        varchar(255) email
+        varchar(255) address
+        varchar(20) phone
+        varchar(50) payment_method
         shipping shipping
         status status
-        numeric total_transaction
-        numeric delivery_fee
-        numeric tax
+        numeric(10,2) total_transaction
+        numeric(10,2) delivery_fee
+        numeric(10,2) tax
         timestamp created_at
         timestamp updated_at
         int created_by FK
@@ -122,12 +122,12 @@ erDiagram
         serial id PK
         int order_id FK
         int product_id FK
-        varchar product_name
-        numeric product_price
-        numeric discount_percent
+        varchar(255) product_name
+        numeric(10,2) product_price
+        numeric(5,2) discount_percent
         int amount
-        numeric subtotal
-        product_size size
+        numeric(10,2) subtotal
+        product_sizes size
         temperature temperature
         timestamp created_at
         timestamp updated_at
@@ -141,8 +141,8 @@ erDiagram
         text session_token UK
         timestamp login_time
         timestamp expired_at
-        varchar ip_address
-        varchar device
+        varchar(30) ip_address
+        varchar(255) device
         bool is_active
         timestamp created_at
         timestamp updated_at
@@ -153,7 +153,7 @@ erDiagram
     password_resets {
         serial id PK
         int user_id FK
-        char token_reset UK
+        char(6) token_reset UK
         timestamp expired_at
         timestamp created_at
         timestamp updated_at
@@ -163,7 +163,7 @@ erDiagram
 
     categories {
         serial id PK
-        varchar name UK
+        varchar(100) name UK
         varchar description
         timestamp created_at
         timestamp updated_at
@@ -183,12 +183,12 @@ erDiagram
 
     coupons {
         serial id PK
-        varchar title UK
+        varchar(255) title UK
         text description
-        numeric discount_percent
-        numeric min_purchase
+        numeric(5,2) discount_percent
+        numeric(10,2) min_purchase
         text image
-        varchar bg_color
+        varchar(20) bg_color
         timestamp valid_until
         bool is_active
         timestamp created_at
@@ -202,7 +202,7 @@ erDiagram
         int user_id FK
         int coupon_id FK
         int order_id FK
-        numeric discount_amount
+        numeric(10,2) discount_amount
         timestamp used_at
         timestamp updated_at
         int created_by FK
@@ -220,22 +220,22 @@ erDiagram
     users ||--o{ products : manages
     users ||--o{ product_image : manages
     users ||--o{ products_order : manages
-    users ||--o{ size : manages
-    users ||--o{ products_size : manages
+    users ||--o{ sizes : manages
+    users ||--o{ size_products : manages
     users ||--o{ categories : manages
     users ||--o{ product_category : manages
     users ||--o{ coupons : manages
 
     products ||--o{ carts : added_to
     products ||--o{ product_image : has
-    products ||--o{ products_size : has
+    products ||--o{ size_products : has
     products ||--o{ products_order : ordered_in
     products ||--o{ product_category : belongs_to
 
     orders ||--o{ products_order : contains
     orders ||--o{ coupon_usage : applied_to
 
-    size ||--o{ products_size : used_in
+    sizes ||--o{ size_products : used_in
 
     categories ||--o{ product_category : includes
 

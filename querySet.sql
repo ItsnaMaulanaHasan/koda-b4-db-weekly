@@ -37,9 +37,9 @@ VALUES ('smoothies', 1, 1),
     ('drinks', 1, 1),
     ('foods', 1, 1);
 
--- insert size
+-- insert sizes
 INSERT INTO
-    size (name, created_by, updated_by)
+    sizes (name, created_by, updated_by)
 VALUES ('R', 1, 1),
     ('L', 1, 1),
     ('XL', 1, 1),
