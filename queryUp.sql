@@ -27,7 +27,7 @@ CREATE TABLE "users" (
     "first_name" varchar(100) NOT NULL,
     "last_name" varchar(100) NOT NULL,
     "email" varchar(100) UNIQUE NOT NULL,
-    "role" varchar(20) NOT NULL DEFAULT 'costumer',
+    "role" varchar(20) NOT NULL DEFAULT 'customer',
     "password" text NOT NULL,
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -66,8 +66,8 @@ CREATE TABLE "products" (
     "name" varchar(100) UNIQUE NOT NULL,
     "description" text NOT NULL,
     "price" numeric(10, 2) NOT NULL CHECK ("price" > 0),
-    "discount" numeric(5, 2),
-    "rating" numeric(3, 2) DEFAULT 5 CHECK (
+    "discount_percent" numeric(5, 2),
+    "rating" numeric(2, 1) DEFAULT 5 CHECK (
         "rating" >= 0
         AND "rating" <= 5
     ),
@@ -113,7 +113,10 @@ CREATE TABLE "testimonies" (
     "id" serial PRIMARY KEY,
     "user_id" int,
     "position" varchar(100),
-    "rating" float DEFAULT 5,
+    "rating" numeric(2, 1) DEFAULT 5 CHECK (
+        "rating" >= 0
+        AND "rating" <= 5
+    ),
     "testimonial" text,
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -133,7 +136,7 @@ CREATE TABLE "orders" (
     "shipping" shipping DEFAULT 'Dine In',
     "status" status DEFAULT 'On Progress',
     "total_transaction" numeric(10, 2) NOT NULL CHECK ("total_transaction" > 0),
-    "deliveryFee" numeric(10, 2) DEFAULT 0,
+    "delivery_fee" numeric(10, 2) DEFAULT 0,
     "tax" numeric(10, 2) DEFAULT 0,
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -145,8 +148,11 @@ CREATE TABLE "products_order" (
     "id" serial PRIMARY KEY,
     "order_id" int,
     "product_id" int,
-    "amount" int,
-    "subtotal" numeric(10, 2),
+    "product_name" varchar(100) NOT NULL,
+    "product_price" numeric(10, 2) NOT NULL CHECK ("product_price" > 0),
+    "discount_percent" numeric(5, 2),
+    "amount" int NOT NULL CHECK ("amount" > 0),
+    "subtotal" numeric(10, 2) NOT NULL,
     "size" product_size DEFAULT 'L',
     "temperature" temperature DEFAULT 'Ice',
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -160,9 +166,10 @@ CREATE TABLE "sessions" (
     "user_id" int,
     "session_token" text UNIQUE NOT NULL,
     "login_time" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "expired_time" timestamp,
+    "expired_at" timestamp,
     "ip_address" varchar(20),
     "device" varchar(100),
+    "is_active" bool DEFAULT true,
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "created_by" int,
@@ -171,8 +178,11 @@ CREATE TABLE "sessions" (
 
 CREATE TABLE "password_resets" (
     "id" serial PRIMARY KEY,
-    "token_reset" char(6) UNIQUE NOT NULL,
     "user_id" int,
+    "token_reset" char(6) UNIQUE NOT NULL,
+    "expired_at" timestamp NOT NULL DEFAULT (
+        CURRENT_TIMESTAMP + INTERVAL '1 hour'
+    ),
     "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
     "created_by" int,
@@ -202,6 +212,8 @@ CREATE TABLE "coupons" (
     "id" serial PRIMARY KEY,
     "title" varchar(100) UNIQUE NOT NULL,
     "description" text NOT NULL,
+    "discount_percent" numeric(5, 2) NOT NULL,
+    "min_purchase" numeric(10, 2),
     "image" text NOT NULL,
     "bg_color" varchar(20) NOT NULL,
     "valid_until" timestamp,
@@ -231,7 +243,7 @@ ALTER TABLE "users"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "profiles"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "profiles"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
@@ -240,7 +252,7 @@ ALTER TABLE "profiles"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "carts"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
 
 ALTER TABLE "carts"
 ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
@@ -294,7 +306,7 @@ ALTER TABLE "testimonies"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "orders"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE RESTRICT;
 
 ALTER TABLE "orders"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
@@ -370,3 +382,33 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
 ALTER TABLE "coupon_usage"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+CREATE INDEX idx_products_name ON products (name);
+
+CREATE INDEX idx_products_is_flash_sale ON products (is_flash_sale)
+WHERE
+    is_flash_sale = true;
+
+CREATE INDEX idx_orders_user_date ON orders (user_id, date_order);
+
+CREATE INDEX idx_carts_user ON carts (user_id);
+
+CREATE INDEX idx_orders_status ON orders (status);
+
+CREATE INDEX idx_products_active ON products (is_active)
+WHERE
+    is_active = true;
+
+CREATE INDEX idx_product_images_product ON product_image (product_id);
+
+CREATE INDEX idx_products_order_order ON products_order (order_id);
+
+CREATE INDEX idx_sessions_token ON sessions (session_token);
+
+CREATE INDEX idx_sessions_user_expired ON sessions (user_id, expired_at);
+
+CREATE INDEX idx_sessions_active ON sessions (user_id, is_active)
+WHERE
+    is_active = true;
+
+CREATE INDEX idx_password_resets_expired ON password_resets (expired_at);
