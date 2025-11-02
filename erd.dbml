@@ -27,7 +27,7 @@ Table users {
   first_name varchar(100) [not null]
   last_name varchar(100) [not null]
   email varchar(100) [unique, not null]
-  role varchar(20) [default: "costumer", not null]
+  role varchar(20) [default: "customer", not null]
   password text [not null]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
@@ -58,7 +58,7 @@ Table carts {
   id serial [primary key]
   user_id int
   product_id int
-  amount int
+  amount int [note: "CHECK amount > 0"]
   subtotal numeric(10,2)
   size product_size [default: "R"]
   temperature temperature [default: "Ice"]
@@ -77,11 +77,11 @@ Table products {
   id serial [primary key]
   name varchar(100) [unique, not null]
   description text [not null]
-  price float [not null]
-  discount float
-  rating float [default: 5]
-  isFlashSale bool [default: false]
-  stock int 
+  price numeric(10,2) [not null, note: "CHECK price > 0"]
+  discount_percent numeric(5,2)
+  rating numeric(2,1) [default: 5, note: "CHECK rating >= 0 AND rating <= 5"]
+  is_flash_sale bool [default: false]
+  stock int [note: "CHECK stock >= 0"]
   is_active bool [default: true]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
@@ -137,7 +137,7 @@ Table testimonies {
   id serial [primary key]
   user_id int
   position varchar(100)
-  rating float [default: 5]
+  rating numeric(2,1) [default: 5, note: "CHECK rating >= 0 AND rating <= 5"]
   testimonial text
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
@@ -152,16 +152,16 @@ Ref: testimonies.updated_by > users.id
 Table orders {
   id serial [primary key]
   user_id int
-  dateOrder timestamp [default:  `CURRENT_TIMESTAMP`]
-  fullName varchar(100) [not null]
+  date_order timestamp [default:  `CURRENT_TIMESTAMP`]
+  full_name varchar(100) [not null]
   email varchar(100) [not null]
   address varchar(100) [not null]
   phone varchar(20) [not null]
-  paymentMethod varchar(20)
+  payment_method varchar(20)
   shipping shipping [default: "Dine In"]
   status status [default: "On Progress"]
-  totalTransaction numeric(10,2) [not null]
-  deliveryFee numeric(10,2) [default: 0]
+  total_transaction numeric(10,2) [not null, note: "CHECK total_transaction > 0"]
+  delivery_fee numeric(10,2) [default: 0]
   tax numeric(10,2) [default: 0]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
@@ -177,8 +177,11 @@ Table products_order {
   id serial [primary key]
   order_id int
   product_id int
-  amount int
-  subtotal numeric(10,2)
+  product_name varchar(100) [not null, note: "Snapshot nama produk saat order"]
+  product_price numeric(10,2) [not null, note: "Snapshot harga produk saat order, CHECK product_price > 0"]
+  discount_percent numeric(5,2) [note: "Snapshot diskon produk saat order"]
+  amount int [not null, note: "CHECK amount > 0"]
+  subtotal numeric(10,2) [not null]
   size product_size [default: "L"]
   temperature temperature [default: "Ice"]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
@@ -197,9 +200,10 @@ Table sessions {
   user_id int
   session_token text [unique, not null]
   login_time timestamp [default: `CURRENT_TIMESTAMP`]
-  expired_time timestamp
+  expired_at timestamp
   ip_address varchar(20)
   device varchar(100)
+  is_active bool [default: true]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
   created_by int
@@ -212,8 +216,9 @@ Ref: sessions.updated_by > users.id
 
 Table password_resets {
   id serial [primary key]
-  token_reset char(6) [unique, not null]
   user_id int
+  token_reset char(6) [unique, not null]
+  expired_at timestamp [not null, default: `CURRENT_TIMESTAMP + INTERVAL '1 hour'`]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
   created_by int
@@ -255,10 +260,12 @@ Table coupons {
   id serial [primary key]
   title varchar(100) [unique, not null]
   description text [not null]
+  discount_percent numeric(5,2) [not null]
+  min_purchase numeric(10,2)
   image text [not null]
-  bgColor varchar(20) [not null]
-  validUntil timestamp
-  isActive bool [default: true]
+  bg_color varchar(20) [not null]
+  valid_until timestamp
+  is_active bool [default: true]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
   created_by int
@@ -273,7 +280,7 @@ Table coupon_usage {
   user_id int
   coupon_id int
   order_id int
-  discount_amount numeric(10,2)
+  discount_amount numeric(10,2) [note: "Snapshot jumlah diskon yang dipakai saat order"]
   used_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
   created_by int
@@ -285,4 +292,3 @@ Ref: coupon_usage.coupon_id > coupons.id
 Ref: coupon_usage.order_id > orders.id
 Ref: coupon_usage.created_by > users.id
 Ref: coupon_usage.updated_by > users.id
-
