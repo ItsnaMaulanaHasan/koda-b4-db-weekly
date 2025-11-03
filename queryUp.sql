@@ -30,25 +30,18 @@ CREATE TABLE "users" (
     "updated_by" int
 );
 
-CREATE TABLE "profiles" (
+CREATE TABLE "categories" (
     "id" serial PRIMARY KEY,
-    "user_id" int,
-    "image" text,
-    "address" varchar(255),
-    "phone_number" varchar(20),
+    "name" varchar(100) UNIQUE NOT NULL,
     "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
 
-CREATE TABLE "carts" (
+CREATE TABLE "sizes" (
     "id" serial PRIMARY KEY,
-    "user_id" int,
-    "product_id" int,
-    "amount" int CHECK ("amount" > 0),
-    "subtotal" numeric(10, 2),
-    "size" product_sizes DEFAULT 'R',
+    "name" varchar(10) UNIQUE NOT NULL,
     "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
@@ -84,19 +77,60 @@ CREATE TABLE "product_images" (
     "updated_by" int
 );
 
-CREATE TABLE "sizes" (
+CREATE TABLE "size_products" (
     "id" serial PRIMARY KEY,
-    "name" varchar(10) UNIQUE NOT NULL,
+    "product_id" int,
+    "size_id" int,
     "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
 
-CREATE TABLE "size_products" (
+CREATE TABLE "product_categories" (
     "id" serial PRIMARY KEY,
     "product_id" int,
-    "size_id" int,
+    "category_id" int,
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "created_by" int,
+    "updated_by" int
+);
+
+CREATE TABLE "profiles" (
+    "id" serial PRIMARY KEY,
+    "user_id" int,
+    "image" text,
+    "address" varchar(255),
+    "phone_number" varchar(20),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "created_by" int,
+    "updated_by" int
+);
+
+CREATE TABLE "sessions" (
+    "id" serial PRIMARY KEY,
+    "user_id" int,
+    "session_token" text UNIQUE NOT NULL,
+    "login_time" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "expired_at" timestamp,
+    "ip_address" varchar(30),
+    "device" varchar(255),
+    "is_active" bool DEFAULT true,
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "created_by" int,
+    "updated_by" int
+);
+
+CREATE TABLE "password_resets" (
+    "id" serial PRIMARY KEY,
+    "user_id" int,
+    "token_reset" char(6) UNIQUE NOT NULL,
+    "expired_at" timestamp NOT NULL DEFAULT(
+        CURRENT_TIMESTAMP + INTERVAL '1 hour'
+    ),
     "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
@@ -112,6 +146,19 @@ CREATE TABLE "testimonies" (
         AND "rating" <= 5
     ),
     "testimonial" text,
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "created_by" int,
+    "updated_by" int
+);
+
+CREATE TABLE "carts" (
+    "id" serial PRIMARY KEY,
+    "user_id" int,
+    "product_id" int,
+    "amount" int CHECK ("amount" > 0),
+    "subtotal" numeric(10, 2),
+    "size" product_sizes DEFAULT 'R',
     "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
@@ -154,53 +201,6 @@ CREATE TABLE "ordered_products" (
     "updated_by" int
 );
 
-CREATE TABLE "sessions" (
-    "id" serial PRIMARY KEY,
-    "user_id" int,
-    "session_token" text UNIQUE NOT NULL,
-    "login_time" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "expired_at" timestamp,
-    "ip_address" varchar(30),
-    "device" varchar(255),
-    "is_active" bool DEFAULT true,
-    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "created_by" int,
-    "updated_by" int
-);
-
-CREATE TABLE "password_resets" (
-    "id" serial PRIMARY KEY,
-    "user_id" int,
-    "token_reset" char(6) UNIQUE NOT NULL,
-    "expired_at" timestamp NOT NULL DEFAULT(
-        CURRENT_TIMESTAMP + INTERVAL '1 hour'
-    ),
-    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "created_by" int,
-    "updated_by" int
-);
-
-CREATE TABLE "categories" (
-    "id" serial PRIMARY KEY,
-    "name" varchar(100) UNIQUE NOT NULL,
-    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "created_by" int,
-    "updated_by" int
-);
-
-CREATE TABLE "product_categories" (
-    "id" serial PRIMARY KEY,
-    "product_id" int,
-    "category_id" int,
-    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
-    "created_by" int,
-    "updated_by" int
-);
-
 CREATE TABLE "coupons" (
     "id" serial PRIMARY KEY,
     "title" varchar(255) UNIQUE NOT NULL,
@@ -230,151 +230,151 @@ CREATE TABLE "coupon_usage" (
 );
 
 ALTER TABLE "users"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_users_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
 ALTER TABLE "users"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "profiles"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
-
-ALTER TABLE "profiles"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "profiles"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "carts"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
-
-ALTER TABLE "carts"
-ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
-
-ALTER TABLE "carts"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "carts"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "products"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "products"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "product_images"
-ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
-
-ALTER TABLE "product_images"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "product_images"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "sizes"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "sizes"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "size_products"
-ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
-
-ALTER TABLE "size_products"
-ADD FOREIGN KEY ("size_id") REFERENCES "sizes" ("id");
-
-ALTER TABLE "size_products"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "size_products"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "testimonies"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-
-ALTER TABLE "testimonies"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "testimonies"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "orders"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE RESTRICT;
-
-ALTER TABLE "orders"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "orders"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "ordered_products"
-ADD FOREIGN KEY ("order_id") REFERENCES "orders" ("id");
-
-ALTER TABLE "ordered_products"
-ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
-
-ALTER TABLE "ordered_products"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "ordered_products"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "sessions"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-
-ALTER TABLE "sessions"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "sessions"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
-
-ALTER TABLE "password_resets"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-
-ALTER TABLE "password_resets"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "password_resets"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_users_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "categories"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_categories_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
 ALTER TABLE "categories"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_categories_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "sizes"
+ADD CONSTRAINT "fk_sizes_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "sizes"
+ADD CONSTRAINT "fk_sizes_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "products"
+ADD CONSTRAINT "fk_producst_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "products"
+ADD CONSTRAINT "fk_products_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "product_images"
+ADD CONSTRAINT "fk_product_images_product_id" FOREIGN KEY ("product_id") REFERENCES "products" ("id");
+
+ALTER TABLE "product_images"
+ADD CONSTRAINT "fk_product_images_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "product_images"
+ADD CONSTRAINT "fk_product_images_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "size_products"
+ADD CONSTRAINT "fk_size_products_product_id" FOREIGN KEY ("product_id") REFERENCES "products" ("id");
+
+ALTER TABLE "size_products"
+ADD CONSTRAINT "fk_size_products_size_id" FOREIGN KEY ("size_id") REFERENCES "sizes" ("id");
+
+ALTER TABLE "size_products"
+ADD CONSTRAINT "fk_size_products_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "size_products"
+ADD CONSTRAINT "fk_size_products_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "product_categories"
-ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
+ADD CONSTRAINT "fk_product_categories_product_id" FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
 ALTER TABLE "product_categories"
-ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
+ADD CONSTRAINT "fk_product_categories_category_id" FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
 
 ALTER TABLE "product_categories"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_product_categories_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
 ALTER TABLE "product_categories"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_product_categories_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "profiles"
+ADD CONSTRAINT "fk_profiles_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "profiles"
+ADD CONSTRAINT "fk_profiles_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "profiles"
+ADD CONSTRAINT "fk_profiles_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "sessions"
+ADD CONSTRAINT "fk_sessions_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "sessions"
+ADD CONSTRAINT "fk_sessions_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "sessions"
+ADD CONSTRAINT "fk_sessions_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "password_resets"
+ADD CONSTRAINT "fk_password_resets_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "password_resets"
+ADD CONSTRAINT "fk_password_resets_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "password_resets"
+ADD CONSTRAINT "fk_password_resets_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "testimonies"
+ADD CONSTRAINT "fk_testimonies_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "testimonies"
+ADD CONSTRAINT "fk_testimonies_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "testimonies"
+ADD CONSTRAINT "fk_testimonies_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "carts"
+ADD CONSTRAINT "fk_carts_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE CASCADE;
+
+ALTER TABLE "carts"
+ADD CONSTRAINT "fk_carts_product_id" FOREIGN KEY ("product_id") REFERENCES "products" ("id");
+
+ALTER TABLE "carts"
+ADD CONSTRAINT "fk_carts_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "carts"
+ADD CONSTRAINT "fk_carts_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "orders"
+ADD CONSTRAINT "fk_orders_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON DELETE RESTRICT;
+
+ALTER TABLE "orders"
+ADD CONSTRAINT "fk_orders_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "orders"
+ADD CONSTRAINT "fk_orders_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+
+ALTER TABLE "ordered_products"
+ADD CONSTRAINT "fk_ordered_products_order_id" FOREIGN KEY ("order_id") REFERENCES "orders" ("id");
+
+ALTER TABLE "ordered_products"
+ADD CONSTRAINT "fk_ordered_products_product_id" FOREIGN KEY ("product_id") REFERENCES "products" ("id");
+
+ALTER TABLE "ordered_products"
+ADD CONSTRAINT "fk_ordered_products_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+
+ALTER TABLE "ordered_products"
+ADD CONSTRAINT "fk_ordered_products_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "coupons"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_coupons_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
 ALTER TABLE "coupons"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_coupons_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "coupon_usage"
-ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_coupon_usage_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
 ALTER TABLE "coupon_usage"
-ADD FOREIGN KEY ("coupon_id") REFERENCES "coupons" ("id");
+ADD CONSTRAINT "fk_coupon_usage_coupon_id" FOREIGN KEY ("coupon_id") REFERENCES "coupons" ("id");
 
 ALTER TABLE "coupon_usage"
-ADD FOREIGN KEY ("order_id") REFERENCES "orders" ("id");
+ADD CONSTRAINT "fk_coupon_usage_order_id" FOREIGN KEY ("order_id") REFERENCES "orders" ("id");
 
 ALTER TABLE "coupon_usage"
-ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_coupon_usage_created_by" FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
 ALTER TABLE "coupon_usage"
-ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
+ADD CONSTRAINT "fk_coupon_usage_updated_by" FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 CREATE INDEX idx_products_name ON products (name);
 
