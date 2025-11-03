@@ -24,8 +24,8 @@ CREATE TABLE "users" (
     "email" varchar(255) UNIQUE NOT NULL,
     "role" varchar(20) NOT NULL DEFAULT 'customer',
     "password" text NOT NULL,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -36,8 +36,8 @@ CREATE TABLE "profiles" (
     "image" text,
     "address" varchar(255),
     "phone_number" varchar(20),
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -49,8 +49,8 @@ CREATE TABLE "carts" (
     "amount" int CHECK ("amount" > 0),
     "subtotal" numeric(10, 2),
     "size" product_sizes DEFAULT 'R',
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -68,18 +68,18 @@ CREATE TABLE "products" (
     "is_flash_sale" bool DEFAULT false,
     "stock" int CHECK ("stock" >= 0),
     "is_active" bool DEFAULT true,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
 
-CREATE TABLE "product_image" (
+CREATE TABLE "product_images" (
     "id" serial PRIMARY KEY,
     "image" text NOT NULL,
     "product_id" int,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -87,8 +87,8 @@ CREATE TABLE "product_image" (
 CREATE TABLE "sizes" (
     "id" serial PRIMARY KEY,
     "name" varchar(10) UNIQUE NOT NULL,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -97,8 +97,8 @@ CREATE TABLE "size_products" (
     "id" serial PRIMARY KEY,
     "product_id" int,
     "size_id" int,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -112,8 +112,8 @@ CREATE TABLE "testimonies" (
         AND "rating" <= 5
     ),
     "testimonial" text,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -121,7 +121,7 @@ CREATE TABLE "testimonies" (
 CREATE TABLE "orders" (
     "id" serial PRIMARY KEY,
     "user_id" int,
-    "date_order" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "date_order" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "full_name" varchar(255) NOT NULL,
     "email" varchar(255) NOT NULL,
     "address" varchar(255) NOT NULL,
@@ -132,13 +132,13 @@ CREATE TABLE "orders" (
     "total_transaction" numeric(10, 2) NOT NULL CHECK ("total_transaction" > 0),
     "delivery_fee" numeric(10, 2) DEFAULT 0,
     "tax" numeric(10, 2) DEFAULT 0,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
 
-CREATE TABLE "products_order" (
+CREATE TABLE "ordered_products" (
     "id" serial PRIMARY KEY,
     "order_id" int,
     "product_id" int,
@@ -148,8 +148,8 @@ CREATE TABLE "products_order" (
     "amount" int NOT NULL CHECK ("amount" > 0),
     "subtotal" numeric(10, 2) NOT NULL,
     "size" product_sizes DEFAULT 'L',
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -158,13 +158,13 @@ CREATE TABLE "sessions" (
     "id" serial PRIMARY KEY,
     "user_id" int,
     "session_token" text UNIQUE NOT NULL,
-    "login_time" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "login_time" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "expired_at" timestamp,
     "ip_address" varchar(30),
     "device" varchar(255),
     "is_active" bool DEFAULT true,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -173,11 +173,11 @@ CREATE TABLE "password_resets" (
     "id" serial PRIMARY KEY,
     "user_id" int,
     "token_reset" char(6) UNIQUE NOT NULL,
-    "expired_at" timestamp NOT NULL DEFAULT (
+    "expired_at" timestamp NOT NULL DEFAULT(
         CURRENT_TIMESTAMP + INTERVAL '1 hour'
     ),
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -185,18 +185,18 @@ CREATE TABLE "password_resets" (
 CREATE TABLE "categories" (
     "id" serial PRIMARY KEY,
     "name" varchar(100) UNIQUE NOT NULL,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
 
-CREATE TABLE "product_category" (
+CREATE TABLE "product_categories" (
     "id" serial PRIMARY KEY,
     "product_id" int,
     "category_id" int,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -211,8 +211,8 @@ CREATE TABLE "coupons" (
     "bg_color" varchar(20) NOT NULL,
     "valid_until" timestamp,
     "is_active" bool DEFAULT true,
-    "created_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "created_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -223,8 +223,8 @@ CREATE TABLE "coupon_usage" (
     "coupon_id" int,
     "order_id" int,
     "discount_amount" numeric(10, 2),
-    "used_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
-    "updated_at" timestamp DEFAULT (CURRENT_TIMESTAMP),
+    "used_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
+    "updated_at" timestamp DEFAULT(CURRENT_TIMESTAMP),
     "created_by" int,
     "updated_by" int
 );
@@ -262,13 +262,13 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 ALTER TABLE "products"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "product_image"
+ALTER TABLE "product_images"
 ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
-ALTER TABLE "product_image"
+ALTER TABLE "product_images"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
-ALTER TABLE "product_image"
+ALTER TABLE "product_images"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "sizes"
@@ -307,16 +307,16 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 ALTER TABLE "orders"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "products_order"
+ALTER TABLE "ordered_products"
 ADD FOREIGN KEY ("order_id") REFERENCES "orders" ("id");
 
-ALTER TABLE "products_order"
+ALTER TABLE "ordered_products"
 ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
-ALTER TABLE "products_order"
+ALTER TABLE "ordered_products"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
-ALTER TABLE "products_order"
+ALTER TABLE "ordered_products"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "sessions"
@@ -343,16 +343,16 @@ ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 ALTER TABLE "categories"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
-ALTER TABLE "product_category"
+ALTER TABLE "product_categories"
 ADD FOREIGN KEY ("product_id") REFERENCES "products" ("id");
 
-ALTER TABLE "product_category"
+ALTER TABLE "product_categories"
 ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
 
-ALTER TABLE "product_category"
+ALTER TABLE "product_categories"
 ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 
-ALTER TABLE "product_category"
+ALTER TABLE "product_categories"
 ADD FOREIGN KEY ("updated_by") REFERENCES "users" ("id");
 
 ALTER TABLE "coupons"
@@ -392,9 +392,9 @@ CREATE INDEX idx_products_active ON products (is_active)
 WHERE
     is_active = true;
 
-CREATE INDEX idx_product_images_product ON product_image (product_id);
+CREATE INDEX idx_product_imagess_product ON product_images (product_id);
 
-CREATE INDEX idx_products_order_order ON products_order (order_id);
+CREATE INDEX idx_ordered_products_order ON ordered_products (order_id);
 
 CREATE INDEX idx_sessions_token ON sessions (session_token);
 

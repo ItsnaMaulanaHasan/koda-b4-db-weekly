@@ -86,7 +86,7 @@ Table products {
 Ref: products.created_by > users.id
 Ref: products.updated_by > users.id
 
-Table product_image {
+Table product_images {
   id serial [primary key]
   image text [not null]
   product_id int
@@ -96,9 +96,9 @@ Table product_image {
   updated_by int
 }
 
-Ref: product_image.product_id > products.id
-Ref: product_image.created_by > users.id
-Ref: product_image.updated_by > users.id
+Ref: product_images.product_id > products.id
+Ref: product_images.created_by > users.id
+Ref: product_images.updated_by > users.id
 
 Table sizes {
   id serial [primary key]
@@ -167,7 +167,7 @@ Ref: orders.user_id > users.id
 Ref: orders.created_by > users.id
 Ref: orders.updated_by > users.id
 
-Table products_order {
+Table ordered_products {
   id serial [primary key]
   order_id int
   product_id int
@@ -183,10 +183,10 @@ Table products_order {
   updated_by int
 }
 
-Ref: products_order.order_id > orders.id
-Ref: products_order.product_id > products.id
-Ref: products_order.created_by > users.id
-Ref: products_order.updated_by > users.id
+Ref: ordered_products.order_id > orders.id
+Ref: ordered_products.product_id > products.id
+Ref: ordered_products.created_by > users.id
+Ref: ordered_products.updated_by > users.id
 
 Table sessions {
   id serial [primary key]

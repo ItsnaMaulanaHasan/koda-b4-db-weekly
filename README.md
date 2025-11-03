@@ -56,7 +56,7 @@ erDiagram
         int updated_by FK
     }
 
-    product_image {
+    product_images {
         serial id PK
         text image
         int product_id FK
@@ -117,7 +117,7 @@ erDiagram
         int updated_by FK
     }
 
-    products_order {
+    ordered_products {
         serial id PK
         int order_id FK
         int product_id FK
@@ -216,8 +216,8 @@ erDiagram
     users ||--o{ coupon_usage : uses
 
     users ||--o{ products : manages
-    users ||--o{ product_image : manages
-    users ||--o{ products_order : manages
+    users ||--o{ product_images : manages
+    users ||--o{ ordered_products : manages
     users ||--o{ sizes : manages
     users ||--o{ size_products : manages
     users ||--o{ categories : manages
@@ -225,12 +225,12 @@ erDiagram
     users ||--o{ coupons : manages
 
     products ||--o{ carts : added_to
-    products ||--o{ product_image : has
+    products ||--o{ product_images : has
     products ||--o{ size_products : has
-    products ||--o{ products_order : ordered_in
+    products ||--o{ ordered_products : ordered_in
     products ||--o{ product_category : belongs_to
 
-    orders ||--o{ products_order : contains
+    orders ||--o{ ordered_products : contains
     orders ||--o{ coupon_usage : applied_to
 
     sizes ||--o{ size_products : used_in
